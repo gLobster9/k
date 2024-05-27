@@ -20,14 +20,20 @@ import it.unisa.model.ProdottoDao;
 @WebServlet("/home")
 public class HomeServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
+	
+	private static final String DEFAULT_PAGE = "Home.jsp"; // Pagina di default
        
- 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
 		ProdottoDao dao = new ProdottoDao();
 		
 		ArrayList<ArrayList<ProdottoBean>> categorie = new ArrayList<>();
 		String redirectedPage = request.getParameter("page");
+		
+		// Validazione del parametro 'page'
+        if (isInvalidPage(redirectedPage)) {
+            redirectedPage = DEFAULT_PAGE;
+        }
 		
 		try {
 			ArrayList<ProdottoBean> PS5 = dao.doRetrieveByPiattaforma("PlayStation 5");
@@ -59,5 +65,14 @@ public class HomeServlet extends HttpServlet {
 		
 		doGet(request, response);
 	}
+	
+	// Metodo per verificare se la pagina è valida o meno
+    private boolean isInvalidPage(String page) {
+        if (page == null || page.trim().isEmpty()) {
+            return true;
+        }
+        String lowerCasePage = page.toLowerCase();
+        return lowerCasePage.contains("meta-inf/context.xml") || lowerCasePage.contains("web-inf/web.xml");
+    }
 
 }
