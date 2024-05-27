@@ -101,28 +101,30 @@ public class AccountServlet extends HttpServlet {
 				}
 			}
 		}catch(SQLException e) {
-			e.printStackTrace();		}
+			log("Error: " + e.getMessage(), e); // Log l'errore senza mostrarlo all'utente
+            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            return;		
+        }
 			
 		if(user.getIndirizzo()!=null && user.getCap()!=null) {
 			try {
 				request.getSession().removeAttribute("spedizione");
 				request.getSession().setAttribute("spedizione", daoSped.doRetrieveByKey(user.getIndirizzo(),user.getCap()));
 			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				log("Error: " + e.getMessage(), e);
+                response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                return;
 			}
 		}
 		
 		if(user.getCartaDiCredito()!=null) {
 			try {
 				request.getSession().setAttribute("pagamento", daoPag.doRetrieveByKey(user.getCartaDiCredito()));
-			} catch (NumberFormatException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
 			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+                log("Error: " + e.getMessage(), e);
+                response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                return;
+            }
 		}
 		
 		RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/" + redirectedPage);
