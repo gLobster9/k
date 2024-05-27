@@ -68,7 +68,7 @@ public class AccountServlet extends HttpServlet {
 						 sped.setCap(cap);
 						 sped.setProvincia(prov);
 						 sped.setCittà(città);
-						 daoSped.doSave(sped);
+						 daoSped.doSave(sped);   
 						 
 					}
 					
